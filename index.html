@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class Lectures — Gourab Mukherjee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal: #0e7c7b;
+      --teal-dark: #0a5c5b;
+      --page: #e8e6da;
+      --card: #ffffff;
+      --ink: #333333;
+      --muted: #6b6b6b;
+      --header: #2b2b2b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    a { color: var(--teal); }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      background: var(--header);
+      color: #fff;
+      padding: 56px 16px 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header .inner { max-width: 960px; margin: 0 auto; position: relative; }
+    .accent-box {
+      position: absolute;
+      top: -20px; left: -40px;
+      width: 150px; height: 150px;
+      border: 5px solid var(--teal);
+      box-shadow: 6px 6px 18px rgba(0,0,0,.4);
+    }
+    .site-title {
+      font-family: Lato, sans-serif;
+      font-weight: 900;
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.1;
+      margin: 0 0 10px;
+      position: relative;
+    }
+    .site-subtitle {
+      font-family: Lato, sans-serif;
+      font-size: 18px;
+      color: #cfcfcf;
+      margin: 0;
+      position: relative;
+    }
+
+    main { max-width: 960px; margin: -80px auto 0; padding: 0 16px 64px; position: relative; }
+
+    /* ---------- Episode cards ---------- */
+    .card {
+      background: var(--card);
+      padding: 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .card.featured { padding: 48px 40px; }
+    .card-meta {
+      font-family: Lato, sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-family: Lato, sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 1.2;
+      color: var(--teal);
+      margin: 0 0 24px;
+    }
+    .featured .card-title { font-weight: 900; font-size: clamp(30px, 4.5vw, 42px); }
+
+    .video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #111;
+      margin-bottom: 24px;
+    }
+    .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    .topics-label {
+      font-family: Lato, sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    .topics { margin: 0 0 28px; padding-left: 1.2em; }
+    .topics li { margin: 2px 0; }
+
+    .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: Lato, sans-serif; font-weight: 700; font-size: 15px;
+      text-decoration: none;
+      padding: 11px 20px;
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      background: #fff;
+      transition: background .15s, color .15s;
+    }
+    .btn.primary { background: var(--teal); color: #fff; }
+    .btn:hover { background: var(--teal-dark); border-color: var(--teal-dark); color: #fff; }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+
+    /* ---------- Archive section ---------- */
+    .section-heading {
+      font-family: Lato, sans-serif;
+      font-weight: 900;
+      font-size: 26px;
+      color: var(--ink);
+      margin: 48px 0 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .search {
+      font-family: Lato, sans-serif; font-size: 15px;
+      padding: 9px 14px; border: 1px solid #c9c6b5; background: #fff; min-width: 240px;
+    }
+    .search:focus { outline: 2px solid var(--teal); outline-offset: -1px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .grid .card { margin: 0; padding: 28px; display: flex; flex-direction: column; }
+    .grid .card-title { font-size: 22px; margin-bottom: 14px; }
+    .grid .topics { font-size: 14px; flex: 1; }
+    .grid .btn { font-size: 14px; padding: 8px 14px; }
+    .empty { font-style: italic; color: var(--muted); }
+
+    footer {
+      text-align: center; font-family: Lato, sans-serif; font-size: 14px; color: var(--muted);
+      padding: 24px 16px 40px;
+    }
+
+    @media (max-width: 600px) {
+      .card, .card.featured { padding: 24px 18px; }
+      .accent-box { width: 90px; height: 90px; left: -30px; }
+      .search { min-width: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="accent-box" aria-hidden="true"></div>
+    <h1 class="site-title" id="course-title"></h1>
+    <p class="site-subtitle" id="course-subtitle"></p>
+  </div>
+</header>
+
+<main>
+  <div id="featured"></div>
+  <div id="archive"></div>
+</main>
+
+<footer id="footer"></footer>
+
+<script>
+  /* =====================================================================
+     EDIT HERE — course info
+     ===================================================================== */
+  const COURSE = {
+    title: "Lecture Videos & Class Notes",
+    subtitle: "Gourab Mukherjee · USC Marshall School of Business",
+  };
+
+  /* =====================================================================
+     EDIT HERE — one entry per lecture. To post a new lecture, copy a block,
+     bump the number, and fill in the fields. Order doesn't matter; the
+     highest number is shown as the big "New lecture" box at the top.
+
+       number : lecture number
+       date   : "YYYY-MM-DD"
+       title  : headline shown in the box
+       video  : Panopto viewer link (embedded automatically); "" if none yet
+       notes  : link to notes (Google Drive folder/file, PDF, etc.); "" if none
+       topics : list of bullet points
+     ===================================================================== */
+  const LECTURES = [
+    {
+      number: 1,
+      date: "2026-10-19",
+      title: "Introduction & Descriptive Statistics",
+      video: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=817fcdfc-9786-4426-9bad-b4e5017a6abf",
+      notes: "https://drive.google.com/drive/folders/1dYNULz-MBSEZdwxlPJnkyK1tY48gA2go?usp=drive_link",
+      topics: [
+        "Introduction and Course Organization",
+        "Descriptive Statistics & Visualization",
+        "Type of Variables",
+        "Plotting Distributions: Bar & Pie Charts, Histogram",
+        "Measures of Center",
+        "Measures of Spread",
+      ],
+    },
+  ];
+
+  /* ===================================================================== */
+
+  const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  const ICON_NOTES = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>';
+
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function fmtDate(iso) {
+    const d = new Date(iso + "T12:00:00");
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  // Panopto "Viewer.aspx?id=..." -> "Embed.aspx?id=..." so it plays inside the box
+  function panoptoEmbed(url) {
+    if (!/panopto/i.test(url) || !/Viewer\.aspx/i.test(url)) return null;
+    const u = new URL(url.replace(/Viewer\.aspx/i, "Embed.aspx"));
+    u.searchParams.set("autoplay", "false");
+    u.searchParams.set("offerviewer", "true");
+    u.searchParams.set("showtitle", "false");
+    u.searchParams.set("interactivity", "all");
+    return u.toString();
+  }
+
+  function buttons(l) {
+    let html = "";
+    if (l.video) html += `<a class="btn primary" href="${esc(l.video)}" target="_blank" rel="noopener">${ICON_PLAY}Watch on Panopto</a>`;
+    if (l.notes) html += `<a class="btn" href="${esc(l.notes)}" target="_blank" rel="noopener">${ICON_NOTES}Class notes</a>`;
+    return html ? `<div class="buttons">${html}</div>` : "";
+  }
+
+  function topicList(l) {
+    if (!l.topics || !l.topics.length) return "";
+    return `<p class="topics-label">Topics covered</p><ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+  }
+
+  function featuredCard(l) {
+    const embed = l.video && panoptoEmbed(l.video);
+    return `
+      <article class="card featured">
+        <div class="card-meta">New lecture: ${esc(fmtDate(l.date))}</div>
+        <h2 class="card-title">Lecture ${esc(l.number)}: ${esc(l.title)}</h2>
+        ${embed ? `<div class="video"><iframe src="${esc(embed)}" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>` : ""}
+        ${topicList(l)}
+        ${buttons(l)}
+      </article>`;
+  }
+
+  function smallCard(l) {
+    return `
+      <article class="card" data-search="${esc((l.title + " " + (l.topics || []).join(" ")).toLowerCase())}">
+        <div class="card-meta">${esc(fmtDate(l.date))}</div>
+        <h3 class="card-title">Lecture ${esc(l.number)}: ${esc(l.title)}</h3>
+        ${topicList(l)}
+        ${buttons(l)}
+      </article>`;
+  }
+
+  const sorted = [...LECTURES].sort((a, b) => b.number - a.number);
+  document.getElementById("course-title").textContent = COURSE.title;
+  document.getElementById("course-subtitle").textContent = COURSE.subtitle;
+  document.title = COURSE.title;
+  document.getElementById("footer").textContent = `${sorted.length} lecture${sorted.length === 1 ? "" : "s"} posted`;
+
+  if (sorted.length) document.getElementById("featured").innerHTML = featuredCard(sorted[0]);
+
+  const rest = sorted.slice(1);
+  if (rest.length) {
+    const archive = document.getElementById("archive");
+    archive.innerHTML = `
+      <h2 class="section-heading">Previous lectures
+        <input class="search" type="search" placeholder="Search topics…" aria-label="Search lectures" />
+      </h2>
+      <div class="grid">${rest.map(smallCard).join("")}</div>
+      <p class="empty" hidden>No lectures match.</p>`;
+    const cards = archive.querySelectorAll(".grid .card");
+    const empty = archive.querySelector(".empty");
+    archive.querySelector(".search").addEventListener("input", e => {
+      const q = e.target.value.trim().toLowerCase();
+      let shown = 0;
+      cards.forEach(c => { const hit = c.dataset.search.includes(q); c.hidden = !hit; shown += hit; });
+      empty.hidden = shown > 0;
+    });
+  }
+</script>
+</body>
+</html>
