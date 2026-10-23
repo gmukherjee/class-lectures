@@ -108,6 +108,13 @@
     }
     .topics { margin: 0 0 28px; padding-left: 1.2em; }
     .topics li { margin: 2px 0; }
+    .topic-note {
+      margin: -12px 0 28px;
+      padding: 12px 16px;
+      background: #fff7d6;
+      border-left: 4px solid var(--gold);
+      font-size: 15px;
+    }
 
     .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
     .btn {
@@ -124,28 +131,6 @@
     .btn:hover { background: var(--cardinal-dark); border-color: var(--cardinal-dark); color: var(--gold); }
     .btn svg { width: 18px; height: 18px; flex: none; }
 
-    /* ---------- Archive section ---------- */
-    .section-heading {
-      font-family: Lato, sans-serif;
-      font-weight: 900;
-      font-size: 26px;
-      color: var(--ink);
-      margin: 48px 0 16px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    }
-    .search {
-      font-family: Lato, sans-serif; font-size: 15px;
-      padding: 9px 14px; border: 1px solid #c9c6b5; background: #fff; min-width: 240px;
-    }
-    .search:focus { outline: 2px solid var(--cardinal); outline-offset: -1px; }
-    .grid .card { border-top: 4px solid var(--cardinal); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-    .grid .card { margin: 0; padding: 28px; display: flex; flex-direction: column; }
-    .grid .card-title { font-size: 22px; margin-bottom: 14px; }
-    .grid .topics { font-size: 14px; flex: 1; }
-    .grid .btn { font-size: 14px; padding: 8px 14px; }
-    .empty { font-style: italic; color: var(--muted); }
-
     footer {
       text-align: center; font-family: Lato, sans-serif; font-size: 14px; color: var(--muted);
       padding: 24px 16px 40px;
@@ -153,7 +138,6 @@
 
     @media (max-width: 600px) {
       .card, .card.featured { padding: 24px 18px; }
-      .search { min-width: 0; width: 100%; }
     }
   </style>
 </head>
@@ -167,8 +151,7 @@
 </header>
 
 <main>
-  <div id="featured"></div>
-  <div id="archive"></div>
+  <div id="lectures"></div>
 </main>
 
 <footer id="footer"></footer>
@@ -184,8 +167,8 @@
 
   /* =====================================================================
      EDIT HERE — one entry per lecture. To post a new lecture, copy a block,
-     bump the number, and fill in the fields. Order doesn't matter; the
-     highest number is shown as the big "New lecture" box at the top.
+     bump the number, and fill in the fields. Order doesn't matter; each
+     lecture gets its own box, highest number at the top.
 
        number : lecture number
        date   : "YYYY-MM-DD"
@@ -194,6 +177,7 @@
                 viewer link (embedded automatically); [] if none yet
        notes  : link to notes (Google Drive folder/file, PDF, etc.); "" if none
        topics : list of bullet points
+       note   : optional remark shown under the topics; leave out if none
      ===================================================================== */
   const LECTURES = [
     {
@@ -211,6 +195,7 @@
         "Getting started with Data Analysis",
         "Brainstorming on Projects",
       ],
+      note: "Agentic data analysis is recorded in the Mac screen video; it is not in the Panopto classroom recording.",
     },
     {
       number: 1,
@@ -267,7 +252,8 @@
 
   function topicList(l) {
     if (!l.topics || !l.topics.length) return "";
-    return `<p class="topics-label">Topics covered</p><ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+    const note = l.note ? `<p class="topic-note"><strong>Note:</strong> ${esc(l.note)}</p>` : "";
+    return `<p class="topics-label">Topics covered</p><ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>${note}`;
   }
 
   // Embedded player; with several recordings, tabs above it switch between them
@@ -278,25 +264,15 @@
       ? `<div class="video-tabs" role="tablist">${vids.map((v, i) =>
           `<button class="video-tab" role="tab" aria-selected="${i === 0}" data-src="${esc(v.embed)}">${esc(v.label)}</button>`).join("")}</div>`
       : "";
-    return `${tabs}<div class="video"><iframe src="${esc(vids[0].embed)}" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>`;
+    return `${tabs}<div class="video"><iframe src="${esc(vids[0].embed)}" loading="lazy" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>`;
   }
 
-  function featuredCard(l) {
+  function lectureCard(l, isNewest) {
     return `
       <article class="card featured">
-        <div class="card-meta">New lecture: ${esc(fmtDate(l.date))}</div>
+        <div class="card-meta">${isNewest ? "New lecture: " : ""}${esc(fmtDate(l.date))}</div>
         <h2 class="card-title">Lecture ${esc(l.number)}: ${esc(l.title)}</h2>
         ${player(l)}
-        ${topicList(l)}
-        ${buttons(l)}
-      </article>`;
-  }
-
-  function smallCard(l) {
-    return `
-      <article class="card" data-search="${esc((l.title + " " + (l.topics || []).join(" ")).toLowerCase())}">
-        <div class="card-meta">${esc(fmtDate(l.date))}</div>
-        <h3 class="card-title">Lecture ${esc(l.number)}: ${esc(l.title)}</h3>
         ${topicList(l)}
         ${buttons(l)}
       </article>`;
@@ -308,34 +284,17 @@
   document.title = COURSE.title;
   document.getElementById("footer").textContent = `${sorted.length} lecture${sorted.length === 1 ? "" : "s"} posted`;
 
-  if (sorted.length) {
-    const featured = document.getElementById("featured");
-    featured.innerHTML = featuredCard(sorted[0]);
-    const tabs = featured.querySelectorAll(".video-tab");
+  const list = document.getElementById("lectures");
+  list.innerHTML = sorted.map((l, i) => lectureCard(l, i === 0)).join("");
+
+  // Each box's tabs switch only that box's player
+  list.querySelectorAll(".card").forEach(card => {
+    const tabs = card.querySelectorAll(".video-tab");
     tabs.forEach(t => t.addEventListener("click", () => {
       tabs.forEach(x => x.setAttribute("aria-selected", x === t));
-      featured.querySelector(".video iframe").src = t.dataset.src;
+      card.querySelector(".video iframe").src = t.dataset.src;
     }));
-  }
-
-  const rest = sorted.slice(1);
-  if (rest.length) {
-    const archive = document.getElementById("archive");
-    archive.innerHTML = `
-      <h2 class="section-heading">Previous lectures
-        <input class="search" type="search" placeholder="Search topics…" aria-label="Search lectures" />
-      </h2>
-      <div class="grid">${rest.map(smallCard).join("")}</div>
-      <p class="empty" hidden>No lectures match.</p>`;
-    const cards = archive.querySelectorAll(".grid .card");
-    const empty = archive.querySelector(".empty");
-    archive.querySelector(".search").addEventListener("input", e => {
-      const q = e.target.value.trim().toLowerCase();
-      let shown = 0;
-      cards.forEach(c => { const hit = c.dataset.search.includes(q); c.hidden = !hit; shown += hit; });
-      empty.hidden = shown > 0;
-    });
-  }
+  });
 </script>
 </body>
 </html>
