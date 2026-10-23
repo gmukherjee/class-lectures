@@ -9,13 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --teal: #0e7c7b;
-      --teal-dark: #0a5c5b;
-      --page: #e8e6da;
+      --cardinal: #990000;
+      --cardinal-dark: #6e0000;
+      --gold: #ffcc00;
+      --page: #f1ede4;
       --card: #ffffff;
       --ink: #333333;
       --muted: #6b6b6b;
-      --header: #2b2b2b;
     }
     * { box-sizing: border-box; }
     body {
@@ -26,24 +26,16 @@
       font-size: 16px;
       line-height: 1.7;
     }
-    a { color: var(--teal); }
+    a { color: var(--cardinal); }
 
     /* ---------- Header ---------- */
     .site-header {
-      background: var(--header);
+      background: var(--cardinal);
+      border-top: 6px solid var(--gold);
       color: #fff;
       padding: 56px 16px 120px;
-      position: relative;
-      overflow: hidden;
     }
-    .site-header .inner { max-width: 960px; margin: 0 auto; position: relative; }
-    .accent-box {
-      position: absolute;
-      top: -20px; left: -40px;
-      width: 150px; height: 150px;
-      border: 5px solid var(--teal);
-      box-shadow: 6px 6px 18px rgba(0,0,0,.4);
-    }
+    .site-header .inner { max-width: 960px; margin: 0 auto; }
     .site-title {
       font-family: Lato, sans-serif;
       font-weight: 900;
@@ -55,9 +47,8 @@
     .site-subtitle {
       font-family: Lato, sans-serif;
       font-size: 18px;
-      color: #cfcfcf;
+      color: var(--gold);
       margin: 0;
-      position: relative;
     }
 
     main { max-width: 960px; margin: -80px auto 0; padding: 0 16px 64px; position: relative; }
@@ -69,7 +60,7 @@
       margin-bottom: 32px;
       box-shadow: 0 1px 3px rgba(0,0,0,.08);
     }
-    .card.featured { padding: 48px 40px; }
+    .card.featured { padding: 48px 40px; border-top: 6px solid var(--gold); }
     .card-meta {
       font-family: Lato, sans-serif;
       font-weight: 700;
@@ -84,7 +75,7 @@
       font-weight: 700;
       font-size: 30px;
       line-height: 1.2;
-      color: var(--teal);
+      color: var(--cardinal);
       margin: 0 0 24px;
     }
     .featured .card-title { font-weight: 900; font-size: clamp(30px, 4.5vw, 42px); }
@@ -97,6 +88,14 @@
       margin-bottom: 24px;
     }
     .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    .video-tabs { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 0; }
+    .video-tab {
+      font-family: Lato, sans-serif; font-weight: 700; font-size: 14px;
+      padding: 9px 18px; border: 0; cursor: pointer;
+      background: #e4dfd2; color: var(--ink);
+    }
+    .video-tab[aria-selected="true"] { background: var(--cardinal); color: #fff; box-shadow: inset 0 -4px 0 var(--gold); }
 
     .topics-label {
       font-family: Lato, sans-serif;
@@ -116,13 +115,13 @@
       font-family: Lato, sans-serif; font-weight: 700; font-size: 15px;
       text-decoration: none;
       padding: 11px 20px;
-      border: 2px solid var(--teal);
-      color: var(--teal);
+      border: 2px solid var(--cardinal);
+      color: var(--cardinal);
       background: #fff;
       transition: background .15s, color .15s;
     }
-    .btn.primary { background: var(--teal); color: #fff; }
-    .btn:hover { background: var(--teal-dark); border-color: var(--teal-dark); color: #fff; }
+    .btn.primary { background: var(--cardinal); color: #fff; }
+    .btn:hover { background: var(--cardinal-dark); border-color: var(--cardinal-dark); color: var(--gold); }
     .btn svg { width: 18px; height: 18px; flex: none; }
 
     /* ---------- Archive section ---------- */
@@ -138,7 +137,8 @@
       font-family: Lato, sans-serif; font-size: 15px;
       padding: 9px 14px; border: 1px solid #c9c6b5; background: #fff; min-width: 240px;
     }
-    .search:focus { outline: 2px solid var(--teal); outline-offset: -1px; }
+    .search:focus { outline: 2px solid var(--cardinal); outline-offset: -1px; }
+    .grid .card { border-top: 4px solid var(--cardinal); }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
     .grid .card { margin: 0; padding: 28px; display: flex; flex-direction: column; }
     .grid .card-title { font-size: 22px; margin-bottom: 14px; }
@@ -153,7 +153,6 @@
 
     @media (max-width: 600px) {
       .card, .card.featured { padding: 24px 18px; }
-      .accent-box { width: 90px; height: 90px; left: -30px; }
       .search { min-width: 0; width: 100%; }
     }
   </style>
@@ -162,7 +161,6 @@
 
 <header class="site-header">
   <div class="inner">
-    <div class="accent-box" aria-hidden="true"></div>
     <h1 class="site-title" id="course-title"></h1>
     <p class="site-subtitle" id="course-subtitle"></p>
   </div>
@@ -192,16 +190,35 @@
        number : lecture number
        date   : "YYYY-MM-DD"
        title  : headline shown in the box
-       video  : Panopto viewer link (embedded automatically); "" if none yet
+       videos : one or more recordings, each { label, url } with a Panopto
+                viewer link (embedded automatically); [] if none yet
        notes  : link to notes (Google Drive folder/file, PDF, etc.); "" if none
        topics : list of bullet points
      ===================================================================== */
   const LECTURES = [
     {
+      number: 2,
+      date: "2026-10-21",
+      title: "R, RStudio & Agentic AI for Data Analysis",
+      videos: [
+        { label: "Classroom", url: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f61c6964-2e93-4994-be1b-b4e5017a6b7d" },
+        { label: "Mac screen", url: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=93348361-88a2-41f6-b236-b4ea0113e15b" },
+      ],
+      notes: "https://drive.google.com/drive/folders/1DzH9RUaavrEH9kO50E5v6I98J-qhnyGO?usp=drive_link",
+      topics: [
+        "R & RStudio",
+        "Agentic AI workflow: Data Analysis",
+        "Getting started with Data Analysis",
+        "Brainstorming on Projects",
+      ],
+    },
+    {
       number: 1,
       date: "2026-10-19",
       title: "Introduction & Descriptive Statistics",
-      video: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=817fcdfc-9786-4426-9bad-b4e5017a6abf",
+      videos: [
+        { label: "Classroom", url: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=817fcdfc-9786-4426-9bad-b4e5017a6abf" },
+      ],
       notes: "https://drive.google.com/drive/folders/1dYNULz-MBSEZdwxlPJnkyK1tY48gA2go?usp=drive_link",
       topics: [
         "Introduction and Course Organization",
@@ -238,8 +255,12 @@
   }
 
   function buttons(l) {
+    const vids = l.videos || [];
     let html = "";
-    if (l.video) html += `<a class="btn primary" href="${esc(l.video)}" target="_blank" rel="noopener">${ICON_PLAY}Watch on Panopto</a>`;
+    vids.forEach(v => {
+      const label = vids.length > 1 ? `Watch: ${v.label}` : "Watch on Panopto";
+      html += `<a class="btn primary" href="${esc(v.url)}" target="_blank" rel="noopener">${ICON_PLAY}${esc(label)}</a>`;
+    });
     if (l.notes) html += `<a class="btn" href="${esc(l.notes)}" target="_blank" rel="noopener">${ICON_NOTES}Class notes</a>`;
     return html ? `<div class="buttons">${html}</div>` : "";
   }
@@ -249,13 +270,23 @@
     return `<p class="topics-label">Topics covered</p><ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
   }
 
+  // Embedded player; with several recordings, tabs above it switch between them
+  function player(l) {
+    const vids = (l.videos || []).map(v => ({ ...v, embed: panoptoEmbed(v.url) })).filter(v => v.embed);
+    if (!vids.length) return "";
+    const tabs = vids.length > 1
+      ? `<div class="video-tabs" role="tablist">${vids.map((v, i) =>
+          `<button class="video-tab" role="tab" aria-selected="${i === 0}" data-src="${esc(v.embed)}">${esc(v.label)}</button>`).join("")}</div>`
+      : "";
+    return `${tabs}<div class="video"><iframe src="${esc(vids[0].embed)}" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>`;
+  }
+
   function featuredCard(l) {
-    const embed = l.video && panoptoEmbed(l.video);
     return `
       <article class="card featured">
         <div class="card-meta">New lecture: ${esc(fmtDate(l.date))}</div>
         <h2 class="card-title">Lecture ${esc(l.number)}: ${esc(l.title)}</h2>
-        ${embed ? `<div class="video"><iframe src="${esc(embed)}" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>` : ""}
+        ${player(l)}
         ${topicList(l)}
         ${buttons(l)}
       </article>`;
@@ -277,7 +308,15 @@
   document.title = COURSE.title;
   document.getElementById("footer").textContent = `${sorted.length} lecture${sorted.length === 1 ? "" : "s"} posted`;
 
-  if (sorted.length) document.getElementById("featured").innerHTML = featuredCard(sorted[0]);
+  if (sorted.length) {
+    const featured = document.getElementById("featured");
+    featured.innerHTML = featuredCard(sorted[0]);
+    const tabs = featured.querySelectorAll(".video-tab");
+    tabs.forEach(t => t.addEventListener("click", () => {
+      tabs.forEach(x => x.setAttribute("aria-selected", x === t));
+      featured.querySelector(".video iframe").src = t.dataset.src;
+    }));
+  }
 
   const rest = sorted.slice(1);
   if (rest.length) {
