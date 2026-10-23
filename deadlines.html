@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Deadlines — Gourab Mukherjee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cardinal: #990000;
+      --cardinal-dark: #6e0000;
+      --gold: #ffcc00;
+      --page: #f1ede4;
+      --card: #ffffff;
+      --ink: #333333;
+      --muted: #6b6b6b;
+
+      /* deliverable fills: soft tint for the row, stronger chip for the type cell */
+      --hw-fill: #e8f0fe;   --hw-chip: #c9dbff;   --hw-ink: #17346f;
+      --case-fill: #fff4dc; --case-chip: #ffdf9e; --case-ink: #6a4300;
+      --ms-fill: #e6f5ec;   --ms-chip: #bfe8cf;   --ms-ink: #135335;
+      --pres-fill: #f4eafb; --pres-chip: #e0c9f5; --pres-ink: #4d2475;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    a { color: var(--cardinal); }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      background: var(--cardinal);
+      border-top: 6px solid var(--gold);
+      color: #fff;
+      padding: 56px 16px 120px;
+    }
+    .site-header .inner { max-width: 960px; margin: 0 auto; }
+    .back {
+      display: inline-block;
+      font-family: Lato, sans-serif; font-weight: 700; font-size: 14px;
+      color: #fff; text-decoration: none; margin-bottom: 18px; opacity: .85;
+    }
+    .back:hover, .back:focus-visible { opacity: 1; color: var(--gold); }
+    .site-title {
+      font-family: Lato, sans-serif;
+      font-weight: 900;
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.1;
+      margin: 0 0 10px;
+    }
+    .site-subtitle {
+      font-family: Lato, sans-serif;
+      font-size: 18px;
+      color: var(--gold);
+      margin: 0;
+    }
+
+    main { max-width: 960px; margin: -80px auto 0; padding: 0 16px 64px; position: relative; }
+
+    .card {
+      background: var(--card);
+      padding: 40px;
+      border-top: 6px solid var(--gold);
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .intro { margin: 0 0 20px; color: var(--muted); }
+
+    /* ---------- Legend ---------- */
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 24px; list-style: none; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: Lato, sans-serif; font-weight: 700; font-size: 14px; line-height: 1.4;
+      padding: 4px 12px; border-radius: 999px; white-space: nowrap;
+    }
+    .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .75; }
+    .hw   .chip, .chip.hw   { background: var(--hw-chip);   color: var(--hw-ink); }
+    .case .chip, .chip.case { background: var(--case-chip); color: var(--case-ink); }
+    .ms   .chip, .chip.ms   { background: var(--ms-chip);   color: var(--ms-ink); }
+    .pres .chip, .chip.pres { background: var(--pres-chip); color: var(--pres-ink); }
+
+    /* ---------- Table ---------- */
+    .table-box { overflow-x: auto; }
+    table { width: 100%; min-width: 680px; border-collapse: collapse; }
+    th, td { text-align: left; padding: 14px 16px; vertical-align: top; }
+    thead th {
+      font-family: Lato, sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+      border-bottom: 2px solid var(--cardinal);
+    }
+    tbody tr + tr td { border-top: 2px solid var(--card); }
+    tbody tr.hw   td { background: var(--hw-fill); }
+    tbody tr.case td { background: var(--case-fill); }
+    tbody tr.ms   td { background: var(--ms-fill); }
+    tbody tr.pres td { background: var(--pres-fill); }
+
+    .date { font-family: Lato, sans-serif; font-weight: 900; font-size: 17px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .countdown { display: block; font-family: Lato, sans-serif; font-weight: 400; font-size: 13px; color: var(--muted); }
+    .day { font-family: Lato, sans-serif; white-space: nowrap; }
+    .name { font-family: Lato, sans-serif; font-weight: 700; font-size: 17px; display: block; }
+    .what { display: block; color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 52ch; }
+    td.date-cell { position: relative; }
+    tr.next td.date-cell::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--cardinal);
+    }
+    .next-tag {
+      display: inline-block; margin-left: 8px; padding: 0 8px;
+      background: var(--cardinal); color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; vertical-align: 2px;
+    }
+    tr.past td { opacity: .5; }
+
+    footer {
+      text-align: center; font-family: Lato, sans-serif; font-size: 14px; color: var(--muted);
+      padding: 24px 16px 40px;
+    }
+
+    @media (max-width: 600px) {
+      .card { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <a class="back" href="./">&larr; Lecture videos &amp; notes</a>
+    <h1 class="site-title">Course Deadlines</h1>
+    <p class="site-subtitle">Gourab Mukherjee · USC Marshall School of Business · Fall 2026</p>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <p class="intro">Every homework, case report, and project milestone in date order. The next upcoming deadline is marked.</p>
+
+    <ul class="legend" aria-label="Deliverable types">
+      <li><span class="chip hw">Homework</span></li>
+      <li><span class="chip case">Case Report</span></li>
+      <li><span class="chip ms">Project Milestone</span></li>
+      <li><span class="chip pres">Final Presentation</span></li>
+    </ul>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Day</th>
+            <th scope="col">Deliverable Type</th>
+            <th scope="col">Deliverable</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr class="ms" data-date="2026-10-26">
+            <td class="date-cell"><span class="date">Oct 26</span></td>
+            <td class="day">Monday</td>
+            <td><span class="chip">Project Milestone</span></td>
+            <td><span class="name">Milestone 1: Project Proposal</span><span class="what">Under one page: data source, variables, proposed analysis, and motivation. A tentative proposal is fine; feel free to consult Max first.</span></td>
+          </tr>
+          <tr class="hw" data-date="2026-10-30">
+            <td class="date-cell"><span class="date">Oct 30</span></td>
+            <td class="day">Friday</td>
+            <td><span class="chip">Homework</span></td>
+            <td><span class="name">HW 1</span></td>
+          </tr>
+          <tr class="ms" data-date="2026-11-02">
+            <td class="date-cell"><span class="date">Nov 2</span></td>
+            <td class="day">Monday</td>
+            <td><span class="chip">Project Milestone</span></td>
+            <td><span class="name">Milestone 2: Data Preparation</span><span class="what">Cleaned dataset as a CSV, the sample size, and a short description of planned visualizations.</span></td>
+          </tr>
+          <tr class="hw" data-date="2026-11-13">
+            <td class="date-cell"><span class="date">Nov 13</span></td>
+            <td class="day">Friday</td>
+            <td><span class="chip">Homework</span></td>
+            <td><span class="name">HW 2</span></td>
+          </tr>
+          <tr class="ms" data-date="2026-11-16">
+            <td class="date-cell"><span class="date">Nov 16</span></td>
+            <td class="day">Monday</td>
+            <td><span class="chip">Project Milestone</span></td>
+            <td><span class="name">Milestone 3: Data Summaries and Visualizations</span><span class="what">Slides with plots, tables, and written interpretations of your findings.</span></td>
+          </tr>
+          <tr class="case" data-date="2026-11-20">
+            <td class="date-cell"><span class="date">Nov 20</span></td>
+            <td class="day">Friday</td>
+            <td><span class="chip">Case Report</span></td>
+            <td><span class="name">Case 1 Report</span></td>
+          </tr>
+          <tr class="ms" data-date="2026-11-23">
+            <td class="date-cell"><span class="date">Nov 23</span></td>
+            <td class="day">Monday</td>
+            <td><span class="chip">Project Milestone</span></td>
+            <td><span class="name">Milestone 4: Regression Analysis</span><span class="what">Slides with regression results and explanations. Preliminary results are fine; graded mainly on effort.</span></td>
+          </tr>
+          <tr class="hw" data-date="2026-11-24">
+            <td class="date-cell"><span class="date">Nov 24</span></td>
+            <td class="day">Tuesday</td>
+            <td><span class="chip">Homework</span></td>
+            <td><span class="name">HW 3</span></td>
+          </tr>
+          <tr class="case" data-date="2026-12-02">
+            <td class="date-cell"><span class="date">Dec 2</span></td>
+            <td class="day">Wednesday</td>
+            <td><span class="chip">Case Report</span></td>
+            <td><span class="name">Case 2 Report</span></td>
+          </tr>
+          <tr class="pres" data-date="2026-12-08" data-start="2026-12-07">
+            <td class="date-cell"><span class="date">Dec 7 &amp; 8</span></td>
+            <td class="day">Monday &amp; Tuesday</td>
+            <td><span class="chip">Final Presentation</span></td>
+            <td><span class="name">Milestone 5: Final Project Presentation</span><span class="what">Combine the earlier milestones into one presentation. Every team member must attend.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>All dates are in 2026. Countdowns use your device's date.</footer>
+
+<script>
+  // Countdown, "Next" tag, and fading of past deadlines, computed from today's date on every load
+  function parse(iso) {
+    const [y, m, d] = iso.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let foundNext = false;
+
+  document.querySelectorAll("#rows tr").forEach(tr => {
+    const due = parse(tr.dataset.date);
+    if (due < today) { tr.classList.add("past"); return; }
+
+    const start = parse(tr.dataset.start || tr.dataset.date);
+    const days = Math.round((start - today) / 86400000);
+    const note = document.createElement("span");
+    note.className = "countdown";
+    note.textContent = days <= 0 ? "today" : days === 1 ? "tomorrow" : `in ${days} days`;
+    tr.querySelector(".date").appendChild(note);
+
+    if (!foundNext) {
+      foundNext = true;
+      tr.classList.add("next");
+      const tag = document.createElement("span");
+      tag.className = "next-tag";
+      tag.textContent = "Next";
+      tr.querySelector(".name").appendChild(tag);
+    }
+  });
+</script>
+</body>
+</html>
