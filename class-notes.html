@@ -96,6 +96,7 @@
 
     .topics { margin: 0 0 12px; padding-left: 1.2em; font-style: italic; color: var(--topic-gray); font-size: 15px; }
     .topics li { margin: 2px 0; }
+    .note-link { font-weight: 700; white-space: nowrap; }
     .topic-note {
       margin: 4px 0 0;
       padding: 8px 12px;
@@ -174,6 +175,7 @@
        notes  : link to notes (Google Drive folder/file, PDF, etc.); "" if none
        topics : list of bullet points
        note   : optional remark shown under the topics; leave out if none
+       noteLink : optional { label, url } link shown at the end of the note
      ===================================================================== */
   const LECTURES = [
     {
@@ -188,7 +190,8 @@
         "Multiple Linear Regression",
         "Practice Quiz 1",
       ],
-      note: "For answers to all solutions of Practice Quiz 1, see the link in the email announcement.",
+      note: "Entire Solution Video for Practice Quiz 1 is available at",
+      noteLink: { label: "Panopto", url: "https://usc-marshall-panopto-demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=39ed9aeb-6aaf-4676-880c-b4f700647d30" },
     },
     {
       number: 4,
@@ -281,7 +284,9 @@
   function lectureCard(l) {
     const topics = (l.topics || []).length
       ? `<ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
-    const note = l.note ? `<p class="topic-note"><strong>Note:</strong> ${esc(l.note)}</p>` : "";
+    const link = l.noteLink
+      ? ` <a class="note-link" href="${esc(l.noteLink.url)}" target="_blank" rel="noopener">${esc(l.noteLink.label)} ↗</a>` : "";
+    const note = l.note ? `<p class="topic-note"><strong>Note:</strong> ${esc(l.note)}${link}</p>` : "";
     return `
       <article class="card">
         <div class="num"><div class="num-label">Lecture</div><div class="num-value">${esc(l.number)}</div></div>
