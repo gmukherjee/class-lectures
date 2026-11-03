@@ -16,6 +16,7 @@
       --card: #ffffff;
       --ink: #333333;
       --muted: #6b6b6b;
+      --topic-gray: #666666;
     }
     * { box-sizing: border-box; }
     body {
@@ -24,25 +25,24 @@
       color: var(--ink);
       font-family: "Libre Baskerville", Georgia, serif;
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.6;
     }
     a { color: var(--cardinal); }
 
     /* ---------- Header ---------- */
     .site-header {
-      background: var(--cardinal);
+      background: #111111;
       border-top: 6px solid var(--gold);
       color: #fff;
-      padding: 56px 16px 120px;
+      padding: 48px 16px 104px;
     }
-    .site-header .inner { max-width: 960px; margin: 0 auto; }
+    .site-header .inner { max-width: 1040px; margin: 0 auto; }
     .site-title {
       font-family: Lato, sans-serif;
       font-weight: 900;
       font-size: clamp(32px, 6vw, 52px);
       line-height: 1.1;
       margin: 0 0 10px;
-      position: relative;
     }
     .site-subtitle {
       font-family: Lato, sans-serif;
@@ -51,93 +51,89 @@
       margin: 0;
     }
 
-    main { max-width: 960px; margin: -80px auto 0; padding: 0 16px 64px; position: relative; }
+    main { max-width: 1040px; margin: -72px auto 0; padding: 0 16px 64px; }
 
-    /* ---------- Episode cards ---------- */
+    /* ---------- Lecture boxes ---------- */
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
     .card {
       background: var(--card);
-      padding: 40px;
-      margin-bottom: 32px;
       box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      display: grid;
+      grid-template-columns: 84px minmax(0, 1fr);
+      border-top: 4px solid var(--cardinal);
     }
-    .card.featured { padding: 48px 40px; border-top: 6px solid var(--gold); }
+
+    /* Number column on the left of each box */
+    .num {
+      background: var(--cardinal);
+      color: #fff;
+      text-align: center;
+      padding: 22px 6px;
+      font-family: Lato, sans-serif;
+    }
+    .num-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+    .num-value { font-size: 40px; font-weight: 900; line-height: 1.1; color: var(--gold); }
+
+    .body { padding: 22px 26px 24px; display: flex; flex-direction: column; }
     .card-meta {
-      font-family: Lato, sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--ink);
-      margin-bottom: 6px;
-    }
-    .card-title {
-      font-family: Lato, sans-serif;
-      font-weight: 700;
-      font-size: 30px;
-      line-height: 1.2;
-      color: var(--cardinal);
-      margin: 0 0 24px;
-    }
-    .featured .card-title { font-weight: 900; font-size: clamp(30px, 4.5vw, 42px); }
-
-    .video {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #111;
-      margin-bottom: 24px;
-    }
-    .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-
-    .video-tabs { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 0; }
-    .video-tab {
-      font-family: Lato, sans-serif; font-weight: 700; font-size: 14px;
-      padding: 9px 18px; border: 0; cursor: pointer;
-      background: #e4dfd2; color: var(--ink);
-    }
-    .video-tab[aria-selected="true"] { background: var(--cardinal); color: #fff; box-shadow: inset 0 -4px 0 var(--gold); }
-
-    .topics-label {
       font-family: Lato, sans-serif;
       font-weight: 700;
       font-size: 13px;
       letter-spacing: .12em;
       text-transform: uppercase;
       color: var(--muted);
-      margin: 0 0 6px;
+      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
-    .topics { margin: 0 0 28px; padding-left: 1.2em; }
-    .topics li { margin: 2px 0; }
-    .topic-note {
-      margin: -12px 0 28px;
-      padding: 12px 16px;
-      background: #fff7d6;
-      border-left: 4px solid var(--gold);
-      font-size: 15px;
+    .card-title {
+      font-family: Lato, sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.25;
+      color: var(--cardinal);
+      margin: 0 0 12px;
     }
 
-    .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: Lato, sans-serif; font-weight: 700; font-size: 15px;
-      text-decoration: none;
-      padding: 11px 20px;
-      border: 2px solid var(--cardinal);
-      color: var(--cardinal);
-      background: #fff;
-      transition: background .15s, color .15s;
+    .topics { margin: 0 0 12px; padding-left: 1.2em; font-style: italic; color: var(--topic-gray); font-size: 15px; }
+    .topics li { margin: 2px 0; }
+    .topic-note {
+      margin: 4px 0 0;
+      padding: 8px 12px;
+      background: #fff7d6;
+      border-left: 4px solid var(--gold);
+      font-size: 14px;
     }
-    .btn.primary { background: var(--cardinal); color: #fff; }
+
+    /* Video and notes links sit right under the title, one per line */
+    .buttons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+    .btn {
+      display: flex; align-items: center; gap: 10px;
+      font-family: Lato, sans-serif; font-weight: 900; font-size: 16px;
+      text-decoration: none;
+      padding: 11px 16px;
+      border: 2px solid var(--cardinal);
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .btn.video { background: var(--cardinal); color: #fff; }
+    .btn.notes { background: var(--gold); border-color: var(--gold); color: var(--ink); }
     .btn:hover { background: var(--cardinal-dark); border-color: var(--cardinal-dark); color: var(--gold); }
     .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn .arrow { margin-left: auto; font-weight: 400; }
 
     footer {
       text-align: center; font-family: Lato, sans-serif; font-size: 14px; color: var(--muted);
       padding: 24px 16px 40px;
     }
 
-    @media (max-width: 600px) {
-      .card, .card.featured { padding: 24px 18px; }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .card { grid-template-columns: 60px minmax(0, 1fr); }
+      .num { padding: 16px 4px; }
+      .num-value { font-size: 30px; }
+      .num-label { font-size: 9px; }
+      .body { padding: 18px 16px 20px; }
     }
   </style>
 </head>
@@ -151,7 +147,7 @@
 </header>
 
 <main>
-  <div id="lectures"></div>
+  <div class="grid" id="lectures"></div>
 </main>
 
 <footer id="footer"></footer>
@@ -167,14 +163,14 @@
 
   /* =====================================================================
      EDIT HERE — one entry per lecture. To post a new lecture, copy a block,
-     bump the number, and fill in the fields. Order doesn't matter; each
-     lecture gets its own box, highest number at the top.
+     bump the number, and fill in the fields. Order doesn't matter; boxes
+     are shown from Lecture 1 to the latest.
 
        number : lecture number
        date   : "YYYY-MM-DD"
        title  : headline shown in the box
        videos : one or more recordings, each { label, url } with a Panopto
-                viewer link (embedded automatically); [] if none yet
+                viewer link; [] if none yet
        notes  : link to notes (Google Drive folder/file, PDF, etc.); "" if none
        topics : list of bullet points
        note   : optional remark shown under the topics; leave out if none
@@ -268,76 +264,44 @@
 
   function fmtDate(iso) {
     const d = new Date(iso + "T12:00:00");
-    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-  }
-
-  // Panopto "Viewer.aspx?id=..." -> "Embed.aspx?id=..." so it plays inside the box
-  function panoptoEmbed(url) {
-    if (!/panopto/i.test(url) || !/Viewer\.aspx/i.test(url)) return null;
-    const u = new URL(url.replace(/Viewer\.aspx/i, "Embed.aspx"));
-    u.searchParams.set("autoplay", "false");
-    u.searchParams.set("offerviewer", "true");
-    u.searchParams.set("showtitle", "false");
-    u.searchParams.set("interactivity", "all");
-    return u.toString();
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
   }
 
   function buttons(l) {
     const vids = l.videos || [];
     let html = "";
     vids.forEach(v => {
-      const label = vids.length > 1 ? `Watch: ${v.label}` : "Watch on Panopto";
-      html += `<a class="btn primary" href="${esc(v.url)}" target="_blank" rel="noopener">${ICON_PLAY}${esc(label)}</a>`;
+      const label = vids.length > 1 ? `Lecture video: ${v.label}` : "Lecture video (Panopto)";
+      html += `<a class="btn video" href="${esc(v.url)}" target="_blank" rel="noopener">${ICON_PLAY}${esc(label)}<span class="arrow">↗</span></a>`;
     });
-    if (l.notes) html += `<a class="btn" href="${esc(l.notes)}" target="_blank" rel="noopener">${ICON_NOTES}Class notes</a>`;
+    if (l.notes) html += `<a class="btn notes" href="${esc(l.notes)}" target="_blank" rel="noopener">${ICON_NOTES}Class notes<span class="arrow">↗</span></a>`;
     return html ? `<div class="buttons">${html}</div>` : "";
   }
 
-  function topicList(l) {
-    if (!l.topics || !l.topics.length) return "";
+  function lectureCard(l) {
+    const topics = (l.topics || []).length
+      ? `<ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
     const note = l.note ? `<p class="topic-note"><strong>Note:</strong> ${esc(l.note)}</p>` : "";
-    return `<p class="topics-label">Topics covered</p><ul class="topics">${l.topics.map(t => `<li>${esc(t)}</li>`).join("")}</ul>${note}`;
-  }
-
-  // Embedded player; with several recordings, tabs above it switch between them
-  function player(l) {
-    const vids = (l.videos || []).map(v => ({ ...v, embed: panoptoEmbed(v.url) })).filter(v => v.embed);
-    if (!vids.length) return "";
-    const tabs = vids.length > 1
-      ? `<div class="video-tabs" role="tablist">${vids.map((v, i) =>
-          `<button class="video-tab" role="tab" aria-selected="${i === 0}" data-src="${esc(v.embed)}">${esc(v.label)}</button>`).join("")}</div>`
-      : "";
-    return `${tabs}<div class="video"><iframe src="${esc(vids[0].embed)}" loading="lazy" allowfullscreen allow="autoplay; fullscreen" title="Lecture ${esc(l.number)} video"></iframe></div>`;
-  }
-
-  function lectureCard(l, isNewest) {
     return `
-      <article class="card featured">
-        <div class="card-meta">${isNewest ? "New lecture: " : ""}${esc(fmtDate(l.date))}</div>
-        <h2 class="card-title">Lecture ${esc(l.number)}${l.title ? `: ${esc(l.title)}` : ""}</h2>
-        ${player(l)}
-        ${topicList(l)}
-        ${buttons(l)}
+      <article class="card">
+        <div class="num"><div class="num-label">Lecture</div><div class="num-value">${esc(l.number)}</div></div>
+        <div class="body">
+          <div class="card-meta">${esc(fmtDate(l.date))}</div>
+          <h2 class="card-title">${l.title ? esc(l.title) : `Lecture ${esc(l.number)}`}</h2>
+          ${buttons(l)}
+          ${topics}
+          ${note}
+        </div>
       </article>`;
   }
 
-  const sorted = [...LECTURES].sort((a, b) => b.number - a.number);
+  // Lecture 1 first, latest last
+  const sorted = [...LECTURES].sort((a, b) => a.number - b.number);
   document.getElementById("course-title").textContent = COURSE.title;
   document.getElementById("course-subtitle").textContent = COURSE.subtitle;
   document.title = COURSE.title;
   document.getElementById("footer").textContent = `${sorted.length} lecture${sorted.length === 1 ? "" : "s"} posted`;
-
-  const list = document.getElementById("lectures");
-  list.innerHTML = sorted.map((l, i) => lectureCard(l, i === 0)).join("");
-
-  // Each box's tabs switch only that box's player
-  list.querySelectorAll(".card").forEach(card => {
-    const tabs = card.querySelectorAll(".video-tab");
-    tabs.forEach(t => t.addEventListener("click", () => {
-      tabs.forEach(x => x.setAttribute("aria-selected", x === t));
-      card.querySelector(".video iframe").src = t.dataset.src;
-    }));
-  });
+  document.getElementById("lectures").innerHTML = sorted.map(lectureCard).join("");
 </script>
 </body>
 </html>
